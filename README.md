@@ -14,6 +14,7 @@
 | `motors/METEOR.eng` | 같은 모터의 비교용 추력곡선 | **원본 그대로** |
 | `analysis/rocket_analysis.py` | 설계·결과 분석과 1자유도 독립 검증 | 2026.10 작성 |
 | `analysis/sixdof.py` | 실측 추력·바람을 넣은 6자유도 비행 시뮬레이터 | 2026.10 작성 |
+| `analysis/genesis_flight.py`, `tests/` | 같은 비행을 Genesis 물리 엔진으로 돌리는 스크립트와 배선 시험 | 2026.10 작성 |
 | `figures/`, `results*.json`, `bom.csv` | 위 스크립트가 만든 그림·수치·부품 목록 | 자동 생성 |
 
 ## 설계
@@ -112,12 +113,29 @@ OpenRocket 결과를 그대로 믿지 않고, 같은 추력곡선·이륙 질량
 
 실측 추력곡선은 초반 추력이 느리게 올라가 레일 이탈 속도가 낮습니다. 그래서 풍속 1 m/s마다 연소 종료 시 기울기가 약 4°씩 커지고, 6 m/s에서는 최고고도가 약 10 % 줄어듭니다. 발사 가능 풍속을 정할 때 근거가 되는 결과입니다.
 
+## Genesis 물리 엔진으로 같은 비행 돌리기
+
+같은 공력 모델을 **서로 다른 적분기**로 돌려 결과가 같은지 확인합니다. `analysis/genesis_flight.py`에서 [Genesis](https://genesis-world.readthedocs.io)가 강체의 병진·회전 운동을 적분하고, 힘과 모멘트는 numpy 6자유도와 같은 함수(`loads()`)로 매 스텝 넣습니다.
+
+- Genesis 원통(지름 131 mm, 길이 1.05 m)을 몸체로 쓰고 Genesis 중력은 끈 뒤 중력까지 직접 넣습니다.
+- 원통은 질량이 고정이라, 힘은 `m_genesis / m(t)`배, 모멘트는 축별 `I_genesis / I(t)`배로 보정해 가속도가 실제 로켓과 같게 맞춥니다.
+- 레일 위에서는 동체축 방향 힘만 넣습니다.
+
+```bash
+pip install genesis-world torch          # GPU 없이 CPU로도 동작
+python analysis/genesis_flight.py --wind 2
+# → results_genesis.json, figures/genesis_vs_numpy.png
+```
+
+**배선 시험:** Genesis와 같은 함수 이름을 가진 대역 모듈(`tests/fake_genesis.py`)로 스크립트의 좌표 변환·질량 보정·외력 적용을 시험했고, numpy 6자유도와 최고고도 차이 0.004 %로 통과했습니다 (`python tests/test_genesis_wiring.py`). 실제 Genesis 실행 결과는 아직 이 저장소에 없습니다. 버전에 따라 외력 함수 이름이 달라, 신버전 `apply_external_wrench`와 구버전 `rigid_solver.apply_links_external_force`를 둘 다 지원합니다.
+
 ## 실행
 
 ```bash
 pip install numpy matplotlib
 python analysis/rocket_analysis.py   # 1자유도 검증
 python analysis/sixdof.py            # 6자유도 + 풍속 민감도
+python tests/test_genesis_wiring.py  # Genesis 스크립트 배선 시험 (Genesis 설치 불필요)
 ```
 
 ## 한계

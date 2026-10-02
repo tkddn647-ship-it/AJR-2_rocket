@@ -75,41 +75,57 @@ class Rocket:
         return float(np.interp(t, self.t_th, self.F_th, right=0.0))
 
 
+class _Wind:
+    """평균풍 + 1차 저역통과 난류. 서쪽에서 동쪽(+x)으로 분다."""
+    def __init__(self, mean, turb=0.10, seed=0, tau=1.0):
+        self.mean, self.turb, self.tau = mean, turb, tau
+        self.rng = np.random.default_rng(seed); self.g = np.zeros(2)
+    def step(self, dt):
+        self.g += dt / self.tau * (-self.g) + self.turb * self.mean * np.sqrt(2 * dt / self.tau) * self.rng.standard_normal(2)
+        return np.array([self.mean + self.g[0], self.g[1], 0.0])
+
+
+def loads(rocket, t, pos, vel, Rm, w, wind, m, x_cg):
+    """한 시점의 힘(세계 좌표, 중력 포함)과 CG 기준 모멘트(동체 좌표).
+
+    동체 좌표: x = 노즈 방향, Rm = 동체→세계 회전행렬, w = 동체 좌표 각속도.
+    numpy 6자유도와 Genesis 스크립트가 같은 함수를 쓴다.
+    """
+    a = rocket.aero
+    xb = Rm[:, 0]
+    v_air = vel - wind
+    V = np.linalg.norm(v_air); rho = isa_rho(max(pos[2], 0.0)); qd = 0.5 * rho * V * V
+    F = rocket.thrust(t) * xb + np.array([0, 0, -m * G0])
+    M_body = np.zeros(3); alpha = 0.0
+    if V > 1e-3:
+        F += -qd * A_REF * CD * v_air / V                            # 축방향 항력 (상대풍 반대)
+        v_b = Rm.T @ v_air
+        perp = np.array([0.0, v_b[1], v_b[2]])                       # 동체에 수직인 상대풍 성분
+        sin_a = np.linalg.norm(perp) / V
+        alpha = np.arcsin(min(sin_a, 1.0))
+        if sin_a > 1e-9:
+            N_b = -qd * A_REF * a["cn_total"] * sin_a * perp / np.linalg.norm(perp)
+            F += Rm @ N_b
+            r_cp = np.array([-(a["x_cp"] - x_cg), 0, 0])           # CG → CP (동체 뒤쪽이 -x)
+            M_body += np.cross(r_cp, N_b)
+        c_damp = 0.5 * rho * V * A_REF * (a["cn_nose"] * (a["x_nose"] - x_cg) ** 2 + a["cn_fins"] * (a["x_fins"] - x_cg) ** 2)
+        M_body += -c_damp * np.array([0, w[1], w[2]])                # 피치·요 감쇠
+    return F, M_body, alpha
+
+
 def simulate(rocket, wind_mean=2.0, turb=0.10, seed=0, dt=0.002, t_max=40.0):
-    rng = np.random.default_rng(seed)
     pos = np.zeros(3); vel = np.zeros(3)
     q = np.array([np.cos(np.pi / 4), 0, -np.sin(np.pi / 4), 0])   # 동체 x축을 세계 +z(위)로
     w = np.zeros(3)                                                  # 동체 좌표 각속도
-    gust = np.zeros(2); tau_g = 1.0
+    wnd = _Wind(wind_mean, turb, seed)
     on_rail = True; t = 0.0; rail_v = np.nan
     log = []
-    a = rocket.aero
     while t < t_max:
         mp = rocket.props(t)
         m, x_cg, I_l, I_r = mp["mass"], mp["cg"], mp["I_long"], mp["I_rot"]
         Rm = rotmat(q); xb = Rm[:, 0]
-        # 바람 (서쪽에서 동쪽 +x로 불고, 난류는 1차 저역통과 백색잡음)
-        gust += dt / tau_g * (-gust) + turb * wind_mean * np.sqrt(2 * dt / tau_g) * rng.standard_normal(2)
-        wind = np.array([wind_mean + gust[0], gust[1], 0.0])
-        v_air = vel - wind
-        V = np.linalg.norm(v_air); rho = isa_rho(max(pos[2], 0.0)); qd = 0.5 * rho * V * V
-        F = rocket.thrust(t) * xb + np.array([0, 0, -m * G0])
-        M_body = np.zeros(3); alpha = 0.0
-        if V > 1e-3:
-            u = v_air / V
-            F += -qd * A_REF * CD * u                                  # 축방향 항력 (상대풍 반대)
-            v_b = Rm.T @ v_air
-            perp = np.array([0.0, v_b[1], v_b[2]])                     # 동체에 수직인 상대풍 성분
-            sin_a = np.linalg.norm(perp) / V
-            alpha = np.arcsin(min(sin_a, 1.0))
-            if sin_a > 1e-9:
-                N_b = -qd * A_REF * a["cn_total"] * sin_a * perp / np.linalg.norm(perp)
-                F += Rm @ N_b
-                r_cp = np.array([-(a["x_cp"] - x_cg), 0, 0])         # CG → CP (동체 뒤쪽이 -x)
-                M_body += np.cross(r_cp, N_b)
-            # 피치·요 감쇠 (Barrowman 감쇠 모멘트)
-            c_damp = 0.5 * rho * V * A_REF * (a["cn_nose"] * (a["x_nose"] - x_cg) ** 2 + a["cn_fins"] * (a["x_fins"] - x_cg) ** 2)
-            M_body += -c_damp * np.array([0, w[1], w[2]])
+        wind = wnd.step(dt)
+        F, M_body, alpha = loads(rocket, t, pos, vel, Rm, w, wind, m, x_cg)
         if on_rail:
             f_axis = F @ xb
             if pos[2] <= 0 and f_axis <= 0:     # 아직 추력이 무게를 못 넘음

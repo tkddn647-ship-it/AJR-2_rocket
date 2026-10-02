@@ -34,44 +34,44 @@
     {
       "wind_ms": 1,
       "apogee_mean_m": 341.32764136951795,
-      "apogee_std_m": 0.1250493756156096,
+      "apogee_std_m": 0.12504937561558882,
       "tilt_burnout_mean_deg": 4.384769467062333,
-      "drift_mean_m": 26.282342936878706
+      "drift_mean_m": 26.2823429368787
     },
     {
       "wind_ms": 2,
       "apogee_mean_m": 338.5888115191548,
-      "apogee_std_m": 0.5168967724882748,
+      "apogee_std_m": 0.5168967724882798,
       "tilt_burnout_mean_deg": 8.75967081671119,
-      "drift_mean_m": 52.49055574821614
+      "drift_mean_m": 52.49055574821615
     },
     {
       "wind_ms": 3,
       "apogee_mean_m": 333.88603548246044,
       "apogee_std_m": 1.179599673730613,
-      "tilt_burnout_mean_deg": 13.113856048911819,
+      "tilt_burnout_mean_deg": 13.113856048911842,
       "drift_mean_m": 78.15120602372812
     },
     {
       "wind_ms": 4,
-      "apogee_mean_m": 327.2687311503613,
-      "apogee_std_m": 2.072906469143515,
-      "tilt_burnout_mean_deg": 17.434866843650198,
-      "drift_mean_m": 102.75766667154494
+      "apogee_mean_m": 327.26873115036125,
+      "apogee_std_m": 2.072906469143511,
+      "tilt_burnout_mean_deg": 17.434866843650205,
+      "drift_mean_m": 102.75766667154497
     },
     {
       "wind_ms": 5,
       "apogee_mean_m": 318.89096180124216,
-      "apogee_std_m": 3.159260924632262,
-      "tilt_burnout_mean_deg": 21.708510637367063,
-      "drift_mean_m": 125.9869207561832
+      "apogee_std_m": 3.159260924632283,
+      "tilt_burnout_mean_deg": 21.708510637367077,
+      "drift_mean_m": 125.98692075618321
     },
     {
       "wind_ms": 6,
-      "apogee_mean_m": 308.9257925546387,
-      "apogee_std_m": 4.398931867997899,
+      "apogee_mean_m": 308.92579255463863,
+      "apogee_std_m": 4.398931867997885,
       "tilt_burnout_mean_deg": 25.919242533490443,
-      "drift_mean_m": 147.58876929842765
+      "drift_mean_m": 147.58876929842762
     }
   ]
 }
