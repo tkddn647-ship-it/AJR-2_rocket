@@ -1,0 +1,71 @@
+{
+  "design": {
+    "body_diameter_m": 0.131,
+    "fins": {
+      "fincount": 4.0,
+      "rootchord": 0.11000000000000004,
+      "tipchord": 0.049,
+      "height": 0.18,
+      "sweeplength": 0.061
+    },
+    "component_mass_sum_kg": 2.766
+  },
+  "motors": {
+    "METEOR": {
+      "header": "I247 50.0 307.0 1 0.400 0.400 METEOR",
+      "total_impulse_Ns": 449.01183900499996,
+      "burn_time_s": 1.8176,
+      "avg_thrust_N": 247.03556283285647,
+      "peak_thrust_N": 277.8957
+    },
+    "TMS": {
+      "header": "I247 50.0 307.0 1 0.400 0.400 TMS",
+      "total_impulse_Ns": 412.63428726697754,
+      "burn_time_s": 3.576,
+      "avg_thrust_N": 115.38990136101161,
+      "peak_thrust_N": 213.8492691
+    }
+  },
+  "openrocket": {
+    "METEOR": {
+      "apogee_m": 473.313,
+      "t_apogee_s": 10.09,
+      "v_max_ms": 103.807,
+      "acc_max_ms2": 67.281,
+      "liftoff_mass_g": 3708.488,
+      "rail_exit_s": 0.23,
+      "rail_exit_ms": 13.725,
+      "burnout_s": 1.818,
+      "stability_min_cal": 1.164045801526717,
+      "cd_mean_ascent": 0.3447777777777778
+    },
+    "TMS": {
+      "apogee_m": 326.093,
+      "t_apogee_s": 9.185,
+      "v_max_ms": 78.357,
+      "acc_max_ms2": 45.333,
+      "liftoff_mass_g": 3896.077,
+      "rail_exit_s": 0.76,
+      "rail_exit_ms": 11.418,
+      "burnout_s": 3.576,
+      "stability_min_cal": 1.2905343511450384,
+      "cd_mean_ascent": 0.5521818181818183
+    }
+  },
+  "crosscheck_1dof": {
+    "METEOR": {
+      "apogee_m": 492.3684592991449,
+      "t_apogee_s": 10.261999999999752,
+      "v_max_ms": 104.04372489948545,
+      "rail_exit_ms": 11.098233233334062,
+      "apogee_error_pct": 4.025974207162047
+    },
+    "TMS": {
+      "apogee_m": 341.8369584998224,
+      "t_apogee_s": 9.352000000000256,
+      "v_max_ms": 78.33994078467514,
+      "rail_exit_ms": 8.19581081682148,
+      "apogee_error_pct": 4.828057793274429
+    }
+  }
+}
