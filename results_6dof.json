@@ -1,0 +1,77 @@
+{
+  "barrowman": {
+    "cn_nose": 2.0,
+    "x_nose": 0.0666,
+    "cn_fins": 10.9189,
+    "x_fins": 0.9674,
+    "cn_total": 12.9189,
+    "x_cp": 0.828,
+    "openrocket_cp_m": 0.8372,
+    "cp_difference_cm": -0.92
+  },
+  "nominal_wind_2ms": {
+    "apogee_m": 338.98309433592146,
+    "t_apogee_s": 9.351999999999792,
+    "drift_at_apogee_m": 49.98190263100512,
+    "v_max_ms": 78.29581285425029,
+    "rail_exit_ms": 8.214641405285542,
+    "tilt_at_burnout_deg": 8.286238465586136,
+    "tilt_at_apogee_deg": 68.08693790241114,
+    "max_aoa_after_rail_deg": 21.810153678352346,
+    "apogee_vs_openrocket_pct": 3.9528890028063923
+  },
+  "openrocket": {
+    "apogee_m": 326.093
+  },
+  "wind_sweep": [
+    {
+      "wind_ms": 0,
+      "apogee_mean_m": 342.22090457285475,
+      "apogee_std_m": 0.0,
+      "tilt_burnout_mean_deg": 0.0,
+      "drift_mean_m": 1.4613965664952912e-13
+    },
+    {
+      "wind_ms": 1,
+      "apogee_mean_m": 341.32764136951795,
+      "apogee_std_m": 0.1250493756156096,
+      "tilt_burnout_mean_deg": 4.384769467062333,
+      "drift_mean_m": 26.282342936878706
+    },
+    {
+      "wind_ms": 2,
+      "apogee_mean_m": 338.5888115191548,
+      "apogee_std_m": 0.5168967724882748,
+      "tilt_burnout_mean_deg": 8.75967081671119,
+      "drift_mean_m": 52.49055574821614
+    },
+    {
+      "wind_ms": 3,
+      "apogee_mean_m": 333.88603548246044,
+      "apogee_std_m": 1.179599673730613,
+      "tilt_burnout_mean_deg": 13.113856048911819,
+      "drift_mean_m": 78.15120602372812
+    },
+    {
+      "wind_ms": 4,
+      "apogee_mean_m": 327.2687311503613,
+      "apogee_std_m": 2.072906469143515,
+      "tilt_burnout_mean_deg": 17.434866843650198,
+      "drift_mean_m": 102.75766667154494
+    },
+    {
+      "wind_ms": 5,
+      "apogee_mean_m": 318.89096180124216,
+      "apogee_std_m": 3.159260924632262,
+      "tilt_burnout_mean_deg": 21.708510637367063,
+      "drift_mean_m": 125.9869207561832
+    },
+    {
+      "wind_ms": 6,
+      "apogee_mean_m": 308.9257925546387,
+      "apogee_std_m": 4.398931867997899,
+      "tilt_burnout_mean_deg": 25.919242533490443,
+      "drift_mean_m": 147.58876929842765
+    }
+  ]
+}

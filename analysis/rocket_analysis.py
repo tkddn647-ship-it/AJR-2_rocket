@@ -67,7 +67,7 @@ def thrust_stats(t, F):
 
 
 # ---------- 3) OpenRocket 결과 ----------
-def read_sim(path: Path):
+def read_sim(path: Path, extra: bool = False):
     rows, events = [], {}
     for line in path.read_text(encoding="latin-1").splitlines():
         if line.startswith("#"):
@@ -81,7 +81,7 @@ def read_sim(path: Path):
         except ValueError:
             pass
     a = np.array(rows)
-    cols = dict(t=0, h=1, vz=2, v=4, acc=5, mass_g=12, cp_cm=16, cg_cm=17, thrust=18, drag=19, cd=20)
+    cols = dict(t=0, h=1, vz=2, v=4, acc=5, aoa=8, mass_g=12, I_long=14, I_rot=15, cp_cm=16, cg_cm=17, thrust=18, drag=19, cd=20)
     return {k: a[:, i] for k, i in cols.items()}, events
 
 
